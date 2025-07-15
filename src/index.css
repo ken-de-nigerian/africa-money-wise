@@ -8,33 +8,61 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
+    /* African-inspired color palette */
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 150 8% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 150 8% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 150 8% 15%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary: Deep African Green */
+    --primary: 150 65% 25%;
+    --primary-foreground: 0 0% 98%;
+    --primary-light: 150 50% 35%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Secondary: Warm Earth Tone */
+    --secondary: 35 45% 92%;
+    --secondary-foreground: 150 65% 25%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Muted earth tones */
+    --muted: 35 20% 95%;
+    --muted-foreground: 150 8% 45%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Accent: Golden yellow */
+    --accent: 45 85% 55%;
+    --accent-foreground: 150 65% 25%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* Success: Bright green for positive transactions */
+    --success: 150 75% 40%;
+    --success-foreground: 0 0% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    /* Warning: Orange for alerts */
+    --warning: 25 85% 60%;
+    --warning-foreground: 0 0% 98%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 35 15% 88%;
+    --input: 35 15% 88%;
+    --ring: 150 65% 25%;
+
+    /* Custom gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(150 65% 25%), hsl(150 50% 35%));
+    --gradient-accent: linear-gradient(135deg, hsl(45 85% 55%), hsl(35 75% 50%));
+    --gradient-success: linear-gradient(135deg, hsl(150 75% 40%), hsl(150 65% 50%));
+    
+    /* Shadows with African green tint */
+    --shadow-primary: 0 10px 30px -10px hsl(150 65% 25% / 0.3);
+    --shadow-card: 0 4px 12px -2px hsl(150 8% 15% / 0.08);
+    --shadow-elevated: 0 20px 40px -15px hsl(150 65% 25% / 0.2);
+
+    /* Transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-spring: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
     --radius: 0.5rem;
 
@@ -56,33 +84,57 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    /* Dark mode with African-inspired palette */
+    --background: 150 8% 6%;
+    --foreground: 0 0% 95%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 150 8% 8%;
+    --card-foreground: 0 0% 95%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 150 8% 8%;
+    --popover-foreground: 0 0% 95%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    /* Primary: Lighter African green for dark mode */
+    --primary: 150 50% 45%;
+    --primary-foreground: 0 0% 95%;
+    --primary-light: 150 45% 55%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    /* Secondary: Darker earth tone */
+    --secondary: 35 15% 15%;
+    --secondary-foreground: 0 0% 95%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    /* Muted dark tones */
+    --muted: 150 8% 12%;
+    --muted-foreground: 0 0% 65%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    /* Accent: Warmer gold for dark mode */
+    --accent: 45 75% 60%;
+    --accent-foreground: 150 8% 6%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    /* Success: Slightly muted green */
+    --success: 150 60% 50%;
+    --success-foreground: 0 0% 95%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    /* Warning: Softer orange */
+    --warning: 25 75% 65%;
+    --warning-foreground: 0 0% 95%;
+
+    --destructive: 0 75% 55%;
+    --destructive-foreground: 0 0% 95%;
+
+    --border: 150 8% 18%;
+    --input: 150 8% 18%;
+    --ring: 150 50% 45%;
+
+    /* Dark mode gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(150 50% 45%), hsl(150 45% 55%));
+    --gradient-accent: linear-gradient(135deg, hsl(45 75% 60%), hsl(35 65% 55%));
+    --gradient-success: linear-gradient(135deg, hsl(150 60% 50%), hsl(150 55% 60%));
+    
+    /* Dark mode shadows */
+    --shadow-primary: 0 10px 30px -10px hsl(150 50% 45% / 0.4);
+    --shadow-card: 0 4px 12px -2px hsl(0 0% 0% / 0.3);
+    --shadow-elevated: 0 20px 40px -15px hsl(150 50% 45% / 0.3);
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
