@@ -58,34 +58,46 @@ const quickActions = [
 
 export function QuickActions() {
   return (
-    <Card className="shadow-card">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Plus className="h-5 w-5" />
+    <Card className="shadow-card border-0 bg-gradient-to-br from-card to-card/95">
+      <CardHeader className="pb-4">
+        <CardTitle className="flex items-center gap-2 text-lg font-semibold">
+          <div className="p-2 rounded-lg bg-primary/10">
+            <Plus className="h-4 w-4 text-primary" />
+          </div>
           Quick Actions
         </CardTitle>
       </CardHeader>
-      <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+      <CardContent className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2 gap-3">
         {quickActions.map((action, index) => {
           const Icon = action.icon;
           return (
-            <Button
+            <div
               key={action.title}
-              variant={action.variant}
-              className={cn(
-                "h-auto p-4 flex flex-col items-start gap-2 transition-all duration-200 animate-scale-in",
-                action.className
-              )}
-              style={{ animationDelay: `${index * 100}ms` }}
+              className="group relative overflow-hidden rounded-xl border bg-gradient-to-br from-card to-muted/20 p-4 transition-all duration-300 hover:shadow-lg hover:scale-[1.02] animate-scale-in cursor-pointer"
+              style={{ animationDelay: `${index * 50}ms` }}
             >
-              <div className="flex items-center gap-2 w-full">
-                <Icon className="h-4 w-4 flex-shrink-0" />
-                <span className="font-medium text-sm text-left">{action.title}</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              
+              <div className="relative space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors duration-300">
+                    <Icon className="h-4 w-4 text-primary" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-medium text-sm text-foreground group-hover:text-primary transition-colors duration-300 truncate">
+                      {action.title}
+                    </h3>
+                    <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                      {action.description}
+                    </p>
+                  </div>
+                </div>
               </div>
-              <span className="text-xs text-muted-foreground text-left">
-                {action.description}
-              </span>
-            </Button>
+              
+              <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="w-2 h-2 rounded-full bg-primary/40" />
+              </div>
+            </div>
           );
         })}
       </CardContent>
