@@ -20,7 +20,22 @@ const mockData = {
   }
 };
 
-export function FinancialOverview() {
+interface Transaction {
+  id: string;
+  type: 'income' | 'expense';
+  amount: number;
+  category: string;
+  description: string;
+  date: Date;
+  method: 'cash' | 'bank' | 'mobile';
+  currency: string;
+}
+
+interface FinancialOverviewProps {
+  transactions?: Transaction[];
+}
+
+export function FinancialOverview({ transactions = [] }: FinancialOverviewProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <StatsCard

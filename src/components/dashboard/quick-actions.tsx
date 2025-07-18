@@ -1,5 +1,4 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { 
   Plus, 
   Upload, 
@@ -9,54 +8,78 @@ import {
   Banknote,
   CreditCard
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
+
+interface QuickActionsProps {
+  onAddTransaction: (method?: 'cash' | 'bank' | 'mobile') => void;
+  onShowBudgets: () => void;
+  onShowAnalytics: () => void;
+}
 
 const quickActions = [
   {
     title: "Add Cash Transaction",
     description: "Record a cash expense or income",
     icon: Banknote,
-    variant: "default" as const,
-    className: "hover:bg-primary/5 border-primary/20"
+    action: 'cash' as const
   },
   {
     title: "Add Bank Transaction",
     description: "Record a bank transfer or payment",
     icon: CreditCard,
-    variant: "secondary" as const,
-    className: "hover:bg-secondary/80"
+    action: 'bank' as const
   },
   {
     title: "Add Mobile Money",
     description: "Record M-Pesa, MTN MoMo, etc.",
     icon: Smartphone,
-    variant: "outline" as const,
-    className: "hover:bg-accent/10 border-accent/30"
+    action: 'mobile' as const
   },
   {
     title: "Upload Statement",
     description: "Import bank or mobile money CSV",
     icon: Upload,
-    variant: "ghost" as const,
-    className: "hover:bg-muted/50"
+    action: 'upload' as const
   },
   {
     title: "Set Budget",
     description: "Create spending limits",
     icon: Target,
-    variant: "ghost" as const,
-    className: "hover:bg-warning/10"
+    action: 'budget' as const
   },
   {
     title: "View Reports",
     description: "Analyze your spending patterns",
     icon: PieChart,
-    variant: "ghost" as const,
-    className: "hover:bg-success/10"
+    action: 'reports' as const
   }
 ];
 
-export function QuickActions() {
+export function QuickActions({ onAddTransaction, onShowBudgets, onShowAnalytics }: QuickActionsProps) {
+  const { toast } = useToast();
+
+  const handleAction = (action: string) => {
+    switch (action) {
+      case 'cash':
+      case 'bank':
+      case 'mobile':
+        onAddTransaction(action as 'cash' | 'bank' | 'mobile');
+        break;
+      case 'upload':
+        toast({
+          title: "Coming Soon",
+          description: "CSV import feature will be available soon",
+        });
+        break;
+      case 'budget':
+        onShowBudgets();
+        break;
+      case 'reports':
+        onShowAnalytics();
+        break;
+    }
+  };
+
   return (
     <Card className="shadow-card border-0 bg-gradient-to-br from-card to-card/95">
       <CardHeader className="pb-4">
@@ -73,6 +96,7 @@ export function QuickActions() {
           return (
             <div
               key={action.title}
+              onClick={() => handleAction(action.action)}
               className="group relative overflow-hidden rounded-xl border bg-gradient-to-br from-card to-muted/20 p-4 transition-all duration-300 hover:shadow-lg hover:scale-[1.02] animate-scale-in cursor-pointer"
               style={{ animationDelay: `${index * 50}ms` }}
             >
