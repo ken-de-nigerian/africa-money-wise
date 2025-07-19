@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinanceAfrica - Personal Finance Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --background: 0 0% 100%;
+            --foreground: 150 8% 15%;
+            --card: 0 0% 100%;
+            --card-foreground: 150 8% 15%;
+            --primary: 150 65% 25%;
+            --primary-foreground: 0 0% 98%;
+            --primary-light: 150 50% 35%;
+            --secondary: 35 45% 92%;
+            --secondary-foreground: 150 65% 25%;
+            --muted: 35 20% 95%;
+            --muted-foreground: 150 8% 45%;
+            --accent: 45 85% 55%;
+            --accent-foreground: 150 65% 25%;
+            --success: 150 75% 40%;
+            --success-foreground: 0 0% 98%;
+            --warning: 25 85% 60%;
+            --warning-foreground: 0 0% 98%;
+            --destructive: 0 84% 60%;
+            --destructive-foreground: 0 0% 98%;
+            --border: 35 15% 88%;
+            --input: 35 15% 88%;
+            --ring: 150 65% 25%;
+            --gradient-primary: linear-gradient(135deg, hsl(150 65% 25%), hsl(150 50% 35%));
+            --gradient-accent: linear-gradient(135deg, hsl(45 85% 55%), hsl(35 75% 50%));
+            --gradient-success: linear-gradient(135deg, hsl(150 75% 40%), hsl(150 65% 50%));
+            --shadow-primary: 0 10px 30px -10px hsl(150 65% 25% / 0.3);
+            --shadow-card: 0 4px 12px -2px hsl(150 8% 15% / 0.08);
+            --shadow-elevated: 0 20px 40px -15px hsl(150 65% 25% / 0.2);
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-spring: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --radius: 0.5rem;
+        }
+
+        .dark {
+            --background: 150 8% 6%;
+            --foreground: 0 0% 95%;
+            --card: 150 8% 8%;
+            --card-foreground: 0 0% 95%;
+            --primary: 150 50% 45%;
+            --primary-foreground: 0 0% 95%;
+            --secondary: 35 15% 15%;
+            --secondary-foreground: 0 0% 95%;
+            --muted: 150 8% 12%;
+            --muted-foreground: 0 0% 65%;
+            --accent: 45 75% 60%;
+            --accent-foreground: 150 8% 6%;
+            --success: 150 60% 50%;
+            --destructive: 0 75% 55%;
+            --border: 150 8% 18%;
+            --input: 150 8% 18%;
+            --ring: 150 50% 45%;
+        }
+
+        body {
+            background-color: hsl(var(--background));
+            color: hsl(var(--foreground));
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        .bg-primary { background-color: hsl(var(--primary)); }
+        .text-primary { color: hsl(var(--primary)); }
+        .text-primary-foreground { color: hsl(var(--primary-foreground)); }
+        .bg-card { background-color: hsl(var(--card)); }
+        .text-card-foreground { color: hsl(var(--card-foreground)); }
+        .bg-muted { background-color: hsl(var(--muted)); }
+        .text-muted-foreground { color: hsl(var(--muted-foreground)); }
+        .border-border { border-color: hsl(var(--border)); }
+        .bg-success { background-color: hsl(var(--success)); }
+        .text-success { color: hsl(var(--success)); }
+        .text-destructive { color: hsl(var(--destructive)); }
+        .bg-gradient-primary { background: var(--gradient-primary); }
+        
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+        }
+        
+        .card {
+            background-color: hsl(var(--card));
+            border: 1px solid hsl(var(--border));
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-card);
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius);
+            font-weight: 500;
+            transition: var(--transition-smooth);
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background-color: hsl(var(--primary));
+            color: hsl(var(--primary-foreground));
+        }
+        
+        .btn-primary:hover {
+            background-color: hsl(var(--primary) / 0.9);
+        }
+        
+        .btn-secondary {
+            background-color: hsl(var(--secondary));
+            color: hsl(var(--secondary-foreground));
+        }
+        
+        .btn-ghost {
+            background-color: transparent;
+            color: hsl(var(--foreground));
+        }
+        
+        .btn-ghost:hover {
+            background-color: hsl(var(--muted));
+        }
+        
+        .input {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid hsl(var(--border));
+            border-radius: var(--radius);
+            background-color: hsl(var(--background));
+            color: hsl(var(--foreground));
+            width: 100%;
+        }
+        
+        .input:focus {
+            outline: none;
+            border-color: hsl(var(--ring));
+            box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2);
+        }
+        
+        .select {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid hsl(var(--border));
+            border-radius: var(--radius);
+            background-color: hsl(var(--background));
+            color: hsl(var(--foreground));
+            width: 100%;
+        }
+        
+        .tab-button {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: transparent;
+            color: hsl(var(--muted-foreground));
+            cursor: pointer;
+            border-radius: var(--radius);
+            transition: var(--transition-smooth);
+        }
+        
+        .tab-button.active {
+            background-color: hsl(var(--primary));
+            color: hsl(var(--primary-foreground));
+        }
+        
+        .quick-action-item {
+            padding: 1rem;
+            border: 1px solid hsl(var(--border));
+            border-radius: var(--radius);
+            background: hsl(var(--card));
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+        
+        .quick-action-item:hover {
+            transform: scale(1.02);
+            box-shadow: var(--shadow-elevated);
+        }
+        
+        .transaction-item {
+            padding: 1rem;
+            border: 1px solid hsl(var(--border));
+            border-radius: var(--radius);
+            background: hsl(var(--card));
+            margin-bottom: 0.5rem;
+        }
+        
+        .currency-ngn { color: #2e7d31; }
+        .currency-ghs { color: #1976d2; }
+        .currency-kes { color: #d32f2f; }
+        .currency-zar { color: #f57c00; }
+        .currency-usd { color: #388e3c; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .hidden { display: none !important; }
+        .grid { display: grid; }
+        .flex { display: flex; }
+        .items-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .gap-4 { gap: 1rem; }
+        .gap-2 { gap: 0.5rem; }
+        .w-full { width: 100%; }
+        .h-full { height: 100%; }
+        .text-center { text-align: center; }
+        .font-bold { font-weight: bold; }
+        .font-semibold { font-weight: 600; }
+        .text-sm { font-size: 0.875rem; }
+        .text-lg { font-size: 1.125rem; }
+        .text-xl { font-size: 1.25rem; }
+        .text-2xl { font-size: 1.5rem; }
+        .text-3xl { font-size: 1.875rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mt-4 { margin-top: 1rem; }
+        .p-4 { padding: 1rem; }
+        .px-4 { padding-left: 1rem; padding-right: 1rem; }
+        .py-8 { padding-top: 2rem; padding-bottom: 2rem; }
+        .space-y-4 > * + * { margin-top: 1rem; }
+        .space-y-6 > * + * { margin-top: 1.5rem; }
+        .rounded-lg { border-radius: 0.5rem; }
+        .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur border-border">
+        <div class="container mx-auto flex h-16 items-center justify-between px-4">
+            <div class="flex items-center gap-4">
+                <button id="mobile-menu" class="btn btn-ghost md:hidden">
+                    <i data-lucide="menu" class="w-5 h-5"></i>
+                </button>
+                <div class="flex items-center gap-2">
+                    <div class="h-8 w-8 rounded-lg bg-gradient-primary flex items-center justify-center">
+                        <span class="text-primary-foreground font-bold text-sm">F</span>
+                    </div>
+                    <h1 class="text-xl font-bold">FinanceAfrica</h1>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <button class="btn btn-ghost relative">
+                    <i data-lucide="bell" class="w-5 h-5"></i>
+                    <span class="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full border-2 border-white"></span>
+                </button>
+                <button class="btn btn-ghost">
+                    <i data-lucide="settings" class="w-5 h-5"></i>
+                </button>
+                <button class="btn btn-ghost">
+                    <i data-lucide="user" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8 space-y-8">
+        <!-- Welcome Section -->
+        <div class="card p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-2xl font-bold mb-2">Welcome back!</h2>
+                    <p class="text-muted-foreground">Here's your financial overview for today</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm text-muted-foreground">Last updated</p>
+                    <p class="font-semibold" id="last-updated">Just now</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="space-y-6">
+            <div class="flex gap-2 border-b border-border">
+                <button class="tab-button active" data-tab="overview">Overview</button>
+                <button class="tab-button" data-tab="transactions">Transactions</button>
+                <button class="tab-button" data-tab="analytics">Analytics</button>
+                <button class="tab-button" data-tab="budgets">Budgets</button>
+            </div>
+
+            <!-- Overview Tab -->
+            <div id="tab-overview" class="tab-content space-y-8">
+                <!-- Financial Overview -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="card p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-semibold">Total Balance</h3>
+                            <i data-lucide="wallet" class="w-5 h-5 text-primary"></i>
+                        </div>
+                        <div class="space-y-2">
+                            <p class="text-3xl font-bold" id="total-balance">₦0.00</p>
+                            <p class="text-sm text-muted-foreground">All accounts combined</p>
+                        </div>
+                    </div>
+                    
+                    <div class="card p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-semibold">This Month</h3>
+                            <i data-lucide="trending-up" class="w-5 h-5 text-success"></i>
+                        </div>
+                        <div class="space-y-2">
+                            <p class="text-2xl font-bold text-success" id="month-income">+₦0.00</p>
+                            <p class="text-sm text-muted-foreground">Income</p>
+                        </div>
+                    </div>
+                    
+                    <div class="card p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-semibold">This Month</h3>
+                            <i data-lucide="trending-down" class="w-5 h-5 text-destructive"></i>
+                        </div>
+                        <div class="space-y-2">
+                            <p class="text-2xl font-bold text-destructive" id="month-expenses">-₦0.00</p>
+                            <p class="text-sm text-muted-foreground">Expenses</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions and Recent Transactions -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Recent Transactions -->
+                    <div class="lg:col-span-2">
+                        <div class="card p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="font-semibold">Recent Transactions</h3>
+                                <button class="btn btn-ghost text-sm" onclick="switchTab('transactions')">View all</button>
+                            </div>
+                            <div id="recent-transactions" class="space-y-3">
+                                <div class="text-center py-8 text-muted-foreground">
+                                    <i data-lucide="receipt" class="w-8 h-8 mx-auto mb-2"></i>
+                                    <p>No transactions yet</p>
+                                    <p class="text-sm">Add your first transaction to get started</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="lg:col-span-1">
+                        <div class="card p-6">
+                            <div class="flex items-center gap-2 mb-4">
+                                <div class="p-2 rounded-lg bg-primary/10">
+                                    <i data-lucide="plus" class="w-4 h-4 text-primary"></i>
+                                </div>
+                                <h3 class="font-semibold">Quick Actions</h3>
+                            </div>
+                            <div class="grid grid-cols-1 gap-3">
+                                <div class="quick-action-item" onclick="openAddTransactionModal('cash')">
+                                    <div class="flex items-center gap-3">
+                                        <div class="p-2 rounded-lg bg-primary/10">
+                                            <i data-lucide="banknote" class="w-4 h-4 text-primary"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-medium text-sm">Add Cash Transaction</h4>
+                                            <p class="text-xs text-muted-foreground">Record a cash expense or income</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="quick-action-item" onclick="openAddTransactionModal('bank')">
+                                    <div class="flex items-center gap-3">
+                                        <div class="p-2 rounded-lg bg-primary/10">
+                                            <i data-lucide="credit-card" class="w-4 h-4 text-primary"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-medium text-sm">Add Bank Transaction</h4>
+                                            <p class="text-xs text-muted-foreground">Record a bank transfer or payment</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="quick-action-item" onclick="openAddTransactionModal('mobile')">
+                                    <div class="flex items-center gap-3">
+                                        <div class="p-2 rounded-lg bg-primary/10">
+                                            <i data-lucide="smartphone" class="w-4 h-4 text-primary"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-medium text-sm">Add Mobile Money</h4>
+                                            <p class="text-xs text-muted-foreground">Record M-Pesa, MTN MoMo, etc.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="quick-action-item" onclick="switchTab('budgets')">
+                                    <div class="flex items-center gap-3">
+                                        <div class="p-2 rounded-lg bg-primary/10">
+                                            <i data-lucide="target" class="w-4 h-4 text-primary"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-medium text-sm">Set Budget</h4>
+                                            <p class="text-xs text-muted-foreground">Create spending limits</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="quick-action-item" onclick="switchTab('analytics')">
+                                    <div class="flex items-center gap-3">
+                                        <div class="p-2 rounded-lg bg-primary/10">
+                                            <i data-lucide="pie-chart" class="w-4 h-4 text-primary"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-medium text-sm">View Reports</h4>
+                                            <p class="text-xs text-muted-foreground">Analyze your spending patterns</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transactions Tab -->
+            <div id="tab-transactions" class="tab-content hidden space-y-6">
+                <!-- Transaction Filters -->
+                <div class="card p-6">
+                    <h3 class="font-semibold mb-4">Filter Transactions</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <input type="text" class="input" id="search-filter" placeholder="Search transactions...">
+                        <select class="select" id="type-filter">
+                            <option value="all">All Types</option>
+                            <option value="income">Income</option>
+                            <option value="expense">Expense</option>
+                        </select>
+                        <select class="select" id="method-filter">
+                            <option value="all">All Methods</option>
+                            <option value="cash">Cash</option>
+                            <option value="bank">Bank</option>
+                            <option value="mobile">Mobile Money</option>
+                        </select>
+                        <button class="btn btn-secondary" onclick="exportTransactions()">
+                            <i data-lucide="download" class="w-4 h-4"></i>
+                            Export CSV
+                        </button>
+                    </div>
+                </div>
+
+                <!-- All Transactions -->
+                <div class="card p-6">
+                    <h3 class="font-semibold mb-4">All Transactions</h3>
+                    <div id="all-transactions" class="space-y-3">
+                        <div class="text-center py-8 text-muted-foreground">
+                            <i data-lucide="receipt" class="w-8 h-8 mx-auto mb-2"></i>
+                            <p>No transactions found</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Tab -->
+            <div id="tab-analytics" class="tab-content hidden space-y-6">
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                    <div class="card p-6">
+                        <h3 class="font-semibold mb-4">Spending by Category</h3>
+                        <canvas id="categoryChart" width="400" height="300"></canvas>
+                    </div>
+                    <div class="card p-6">
+                        <h3 class="font-semibold mb-4">Monthly Trends</h3>
+                        <canvas id="trendsChart" width="400" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Budgets Tab -->
+            <div id="tab-budgets" class="tab-content hidden space-y-6">
+                <div class="card p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-semibold">Budget Overview</h3>
+                        <button class="btn btn-primary" onclick="openAddBudgetModal()">
+                            <i data-lucide="plus" class="w-4 h-4"></i>
+                            Add Budget
+                        </button>
+                    </div>
+                    <div id="budgets-list" class="space-y-4">
+                        <div class="text-center py-8 text-muted-foreground">
+                            <i data-lucide="target" class="w-8 h-8 mx-auto mb-2"></i>
+                            <p>No budgets set</p>
+                            <p class="text-sm">Create your first budget to track spending</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add Transaction Modal -->
+    <div id="add-transaction-modal" class="fixed inset-0 z-50 modal-backdrop hidden items-center justify-center">
+        <div class="card p-6 w-full max-w-md mx-4 fade-in">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-semibold">Add Transaction</h3>
+                <button onclick="closeAddTransactionModal()" class="btn btn-ghost">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+            <form id="transaction-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-2">Type</label>
+                    <select id="transaction-type" class="select" required>
+                        <option value="expense">Expense</option>
+                        <option value="income">Income</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">Amount</label>
+                    <input type="number" id="transaction-amount" class="input" placeholder="0.00" step="0.01" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">Description</label>
+                    <input type="text" id="transaction-description" class="input" placeholder="What was this for?" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">Category</label>
+                    <select id="transaction-category" class="select" required>
+                        <option value="">Select category</option>
+                        <option value="Food & Dining">Food & Dining</option>
+                        <option value="Transportation">Transportation</option>
+                        <option value="Bills & Utilities">Bills & Utilities</option>
+                        <option value="Shopping">Shopping</option>
+                        <option value="Entertainment">Entertainment</option>
+                        <option value="Health & Medical">Health & Medical</option>
+                        <option value="Education">Education</option>
+                        <option value="Salary">Salary</option>
+                        <option value="Business">Business</option>
+                        <option value="Investments">Investments</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">Payment Method</label>
+                    <select id="transaction-method" class="select" required>
+                        <option value="cash">Cash</option>
+                        <option value="bank">Bank Transfer</option>
+                        <option value="mobile">Mobile Money</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">Currency</label>
+                    <select id="transaction-currency" class="select" required>
+                        <option value="NGN">Nigerian Naira (₦)</option>
+                        <option value="GHS">Ghanaian Cedi (₵)</option>
+                        <option value="KES">Kenyan Shilling (KSh)</option>
+                        <option value="ZAR">South African Rand (R)</option>
+                        <option value="USD">US Dollar ($)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">Date</label>
+                    <input type="date" id="transaction-date" class="input" required>
+                </div>
+                <div class="flex gap-2 pt-4">
+                    <button type="button" onclick="closeAddTransactionModal()" class="btn btn-secondary flex-1">Cancel</button>
+                    <button type="submit" class="btn btn-primary flex-1">Add Transaction</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Application state
+        let transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+        let budgets = JSON.parse(localStorage.getItem('budgets') || '[]');
+        let currentTab = 'overview';
+        let presetMethod = null;
+
+        // Currency symbols
+        const currencySymbols = {
+            NGN: '₦',
+            GHS: '₵',
+            KES: 'KSh',
+            ZAR: 'R',
+            USD: '$'
+        };
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            setupEventListeners();
+            updateFinancialOverview();
+            renderRecentTransactions();
+            renderAllTransactions();
+            updateCharts();
+            setCurrentDate();
+        });
+
+        function setupEventListeners() {
+            // Tab switching
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    const tab = button.dataset.tab;
+                    switchTab(tab);
+                });
+            });
+
+            // Transaction form
+            document.getElementById('transaction-form').addEventListener('submit', handleAddTransaction);
+
+            // Search and filters
+            document.getElementById('search-filter').addEventListener('input', filterTransactions);
+            document.getElementById('type-filter').addEventListener('change', filterTransactions);
+            document.getElementById('method-filter').addEventListener('change', filterTransactions);
+
+            // Close modal when clicking backdrop
+            document.getElementById('add-transaction-modal').addEventListener('click', (e) => {
+                if (e.target === e.currentTarget) {
+                    closeAddTransactionModal();
+                }
+            });
+        }
+
+        function switchTab(tab) {
+            // Update tab buttons
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            document.getElementById(`tab-${tab}`).classList.remove('hidden');
+
+            currentTab = tab;
+
+            // Update specific tab content
+            if (tab === 'analytics') {
+                updateCharts();
+            }
+        }
+
+        function openAddTransactionModal(method = null) {
+            presetMethod = method;
+            if (method) {
+                document.getElementById('transaction-method').value = method;
+            }
+            document.getElementById('add-transaction-modal').classList.remove('hidden');
+            document.getElementById('add-transaction-modal').classList.add('flex');
+        }
+
+        function closeAddTransactionModal() {
+            document.getElementById('add-transaction-modal').classList.add('hidden');
+            document.getElementById('add-transaction-modal').classList.remove('flex');
+            document.getElementById('transaction-form').reset();
+            presetMethod = null;
+        }
+
+        function handleAddTransaction(e) {
+            e.preventDefault();
+            
+            const form = e.target;
+            const formData = new FormData(form);
+            
+            const transaction = {
+                id: Date.now().toString(),
+                type: document.getElementById('transaction-type').value,
+                amount: parseFloat(document.getElementById('transaction-amount').value),
+                description: document.getElementById('transaction-description').value,
+                category: document.getElementById('transaction-category').value,
+                method: document.getElementById('transaction-method').value,
+                currency: document.getElementById('transaction-currency').value,
+                date: new Date(document.getElementById('transaction-date').value),
+                createdAt: new Date()
+            };
+
+            transactions.unshift(transaction);
+            localStorage.setItem('transactions', JSON.stringify(transactions));
+
+            updateFinancialOverview();
+            renderRecentTransactions();
+            renderAllTransactions();
+            updateCharts();
+            closeAddTransactionModal();
+            
+            showToast('Transaction added successfully!', 'success');
+        }
+
+        function updateFinancialOverview() {
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+
+            let totalBalance = 0;
+            let monthIncome = 0;
+            let monthExpenses = 0;
+
+            transactions.forEach(transaction => {
+                const transactionDate = new Date(transaction.date);
+                const amount = transaction.type === 'income' ? transaction.amount : -transaction.amount;
+                
+                totalBalance += amount;
+
+                if (transactionDate.getMonth() === currentMonth && transactionDate.getFullYear() === currentYear) {
+                    if (transaction.type === 'income') {
+                        monthIncome += transaction.amount;
+                    } else {
+                        monthExpenses += transaction.amount;
+                    }
+                }
+            });
+
+            // Update UI with default currency (NGN)
+            document.getElementById('total-balance').textContent = formatCurrency(totalBalance, 'NGN');
+            document.getElementById('month-income').textContent = '+' + formatCurrency(monthIncome, 'NGN');
+            document.getElementById('month-expenses').textContent = '-' + formatCurrency(monthExpenses, 'NGN');
+        }
+
+        function renderRecentTransactions() {
+            const container = document.getElementById('recent-transactions');
+            const recentTransactions = transactions.slice(0, 5);
+
+            if (recentTransactions.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8 text-muted-foreground">
+                        <i data-lucide="receipt" class="w-8 h-8 mx-auto mb-2"></i>
+                        <p>No transactions yet</p>
+                        <p class="text-sm">Add your first transaction to get started</p>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            container.innerHTML = recentTransactions.map(transaction => `
+                <div class="transaction-item">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 rounded-lg bg-primary/10">
+                                <i data-lucide="${getTransactionIcon(transaction.category)}" class="w-4 h-4 text-primary"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium">${transaction.description}</h4>
+                                <p class="text-sm text-muted-foreground">${transaction.category} • ${transaction.method}</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-semibold ${transaction.type === 'income' ? 'text-success' : 'text-destructive'}">
+                                ${transaction.type === 'income' ? '+' : '-'}${formatCurrency(transaction.amount, transaction.currency)}
+                            </p>
+                            <p class="text-sm text-muted-foreground">${formatDate(transaction.date)}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            lucide.createIcons();
+        }
+
+        function renderAllTransactions() {
+            const container = document.getElementById('all-transactions');
+            const filteredTransactions = getFilteredTransactions();
+
+            if (filteredTransactions.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8 text-muted-foreground">
+                        <i data-lucide="receipt" class="w-8 h-8 mx-auto mb-2"></i>
+                        <p>No transactions found</p>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            container.innerHTML = filteredTransactions.map(transaction => `
+                <div class="transaction-item">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 rounded-lg bg-primary/10">
+                                <i data-lucide="${getTransactionIcon(transaction.category)}" class="w-4 h-4 text-primary"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium">${transaction.description}</h4>
+                                <p class="text-sm text-muted-foreground">${transaction.category} • ${transaction.method}</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-semibold ${transaction.type === 'income' ? 'text-success' : 'text-destructive'}">
+                                ${transaction.type === 'income' ? '+' : '-'}${formatCurrency(transaction.amount, transaction.currency)}
+                            </p>
+                            <p class="text-sm text-muted-foreground">${formatDate(transaction.date)}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            lucide.createIcons();
+        }
+
+        function getFilteredTransactions() {
+            const search = document.getElementById('search-filter').value.toLowerCase();
+            const typeFilter = document.getElementById('type-filter').value;
+            const methodFilter = document.getElementById('method-filter').value;
+
+            return transactions.filter(transaction => {
+                // Search filter
+                if (search && !transaction.description.toLowerCase().includes(search) && 
+                    !transaction.category.toLowerCase().includes(search)) {
+                    return false;
+                }
+
+                // Type filter
+                if (typeFilter !== 'all' && transaction.type !== typeFilter) {
+                    return false;
+                }
+
+                // Method filter
+                if (methodFilter !== 'all' && transaction.method !== methodFilter) {
+                    return false;
+                }
+
+                return true;
+            });
+        }
+
+        function filterTransactions() {
+            renderAllTransactions();
+        }
+
+        function updateCharts() {
+            updateCategoryChart();
+            updateTrendsChart();
+        }
+
+        function updateCategoryChart() {
+            const canvas = document.getElementById('categoryChart');
+            const ctx = canvas.getContext('2d');
+
+            // Clear previous chart
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Calculate category spending
+            const categories = {};
+            transactions.filter(t => t.type === 'expense').forEach(transaction => {
+                categories[transaction.category] = (categories[transaction.category] || 0) + transaction.amount;
+            });
+
+            const categoryData = Object.entries(categories);
+            
+            if (categoryData.length === 0) {
+                ctx.fillStyle = '#888';
+                ctx.font = '16px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('No expense data available', canvas.width / 2, canvas.height / 2);
+                return;
+            }
+
+            // Simple pie chart
+            const total = categoryData.reduce((sum, [_, amount]) => sum + amount, 0);
+            const colors = ['#16a34a', '#dc2626', '#ea580c', '#d97706', '#65a30d', '#059669', '#0891b2'];
+            
+            let currentAngle = 0;
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = Math.min(centerX, centerY) - 20;
+
+            categoryData.forEach(([category, amount], index) => {
+                const angle = (amount / total) * 2 * Math.PI;
+                
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, currentAngle, currentAngle + angle);
+                ctx.lineTo(centerX, centerY);
+                ctx.fillStyle = colors[index % colors.length];
+                ctx.fill();
+                
+                currentAngle += angle;
+            });
+
+            // Add legend
+            categoryData.forEach(([category, amount], index) => {
+                const y = 20 + index * 20;
+                ctx.fillStyle = colors[index % colors.length];
+                ctx.fillRect(10, y, 15, 15);
+                ctx.fillStyle = '#333';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'left';
+                ctx.fillText(`${category}: ${formatCurrency(amount, 'NGN')}`, 30, y + 12);
+            });
+        }
+
+        function updateTrendsChart() {
+            const canvas = document.getElementById('trendsChart');
+            const ctx = canvas.getContext('2d');
+
+            // Clear previous chart
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Calculate monthly data for last 6 months
+            const months = [];
+            const incomeData = [];
+            const expenseData = [];
+
+            for (let i = 5; i >= 0; i--) {
+                const date = new Date();
+                date.setMonth(date.getMonth() - i);
+                const month = date.getMonth();
+                const year = date.getFullYear();
+                
+                months.push(date.toLocaleDateString('en-US', { month: 'short' }));
+                
+                let monthIncome = 0;
+                let monthExpense = 0;
+                
+                transactions.forEach(transaction => {
+                    const transactionDate = new Date(transaction.date);
+                    if (transactionDate.getMonth() === month && transactionDate.getFullYear() === year) {
+                        if (transaction.type === 'income') {
+                            monthIncome += transaction.amount;
+                        } else {
+                            monthExpense += transaction.amount;
+                        }
+                    }
+                });
+                
+                incomeData.push(monthIncome);
+                expenseData.push(monthExpense);
+            }
+
+            // Simple line chart
+            const maxValue = Math.max(...incomeData, ...expenseData) || 1000;
+            const padding = 40;
+            const chartWidth = canvas.width - padding * 2;
+            const chartHeight = canvas.height - padding * 2;
+
+            // Draw axes
+            ctx.strokeStyle = '#ddd';
+            ctx.beginPath();
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, canvas.height - padding);
+            ctx.lineTo(canvas.width - padding, canvas.height - padding);
+            ctx.stroke();
+
+            // Draw income line
+            ctx.strokeStyle = '#16a34a';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            incomeData.forEach((value, index) => {
+                const x = padding + (index * chartWidth / (months.length - 1));
+                const y = canvas.height - padding - (value / maxValue * chartHeight);
+                if (index === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            });
+            ctx.stroke();
+
+            // Draw expense line
+            ctx.strokeStyle = '#dc2626';
+            ctx.beginPath();
+            expenseData.forEach((value, index) => {
+                const x = padding + (index * chartWidth / (months.length - 1));
+                const y = canvas.height - padding - (value / maxValue * chartHeight);
+                if (index === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            });
+            ctx.stroke();
+
+            // Draw month labels
+            ctx.fillStyle = '#666';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'center';
+            months.forEach((month, index) => {
+                const x = padding + (index * chartWidth / (months.length - 1));
+                ctx.fillText(month, x, canvas.height - 10);
+            });
+
+            // Draw legend
+            ctx.fillStyle = '#16a34a';
+            ctx.fillRect(padding, 10, 15, 15);
+            ctx.fillStyle = '#333';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'left';
+            ctx.fillText('Income', padding + 20, 22);
+
+            ctx.fillStyle = '#dc2626';
+            ctx.fillRect(padding + 80, 10, 15, 15);
+            ctx.fillStyle = '#333';
+            ctx.fillText('Expenses', padding + 100, 22);
+        }
+
+        function exportTransactions() {
+            const filteredTransactions = getFilteredTransactions();
+            
+            if (filteredTransactions.length === 0) {
+                showToast('No transactions to export', 'warning');
+                return;
+            }
+
+            const csvContent = [
+                ['Date', 'Type', 'Description', 'Category', 'Method', 'Amount', 'Currency'],
+                ...filteredTransactions.map(t => [
+                    formatDate(t.date),
+                    t.type,
+                    t.description,
+                    t.category,
+                    t.method,
+                    t.amount,
+                    t.currency
+                ])
+            ].map(row => row.map(field => `"${field}"`).join(',')).join('\n');
+
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `transactions-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+
+            showToast('Transactions exported successfully!', 'success');
+        }
+
+        function formatCurrency(amount, currency) {
+            const symbol = currencySymbols[currency];
+            const formatter = new Intl.NumberFormat('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+            });
+            return `${symbol}${formatter.format(Math.abs(amount))}`;
+        }
+
+        function formatDate(date) {
+            return new Date(date).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        function getTransactionIcon(category) {
+            const icons = {
+                'Food & Dining': 'utensils',
+                'Transportation': 'car',
+                'Bills & Utilities': 'file-text',
+                'Shopping': 'shopping-bag',
+                'Entertainment': 'play-circle',
+                'Health & Medical': 'heart',
+                'Education': 'book',
+                'Salary': 'dollar-sign',
+                'Business': 'briefcase',
+                'Investments': 'trending-up',
+                'Other': 'circle'
+            };
+            return icons[category] || 'circle';
+        }
+
+        function setCurrentDate() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('transaction-date').value = today;
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `card p-4 mb-2 fade-in ${type === 'success' ? 'border-l-4 border-l-green-500' : type === 'warning' ? 'border-l-4 border-l-yellow-500' : 'border-l-4 border-l-blue-500'}`;
+            toast.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <span class="text-sm font-medium">${message}</span>
+                    <button onclick="this.parentElement.parentElement.remove()" class="text-muted-foreground hover:text-foreground">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            `;
+
+            document.getElementById('toast-container').appendChild(toast);
+            lucide.createIcons();
+
+            setTimeout(() => {
+                toast.remove();
+            }, 5000);
+        }
+
+        function openAddBudgetModal() {
+            showToast('Budget feature coming soon!', 'info');
+        }
+    </script>
+</body>
+</html>
